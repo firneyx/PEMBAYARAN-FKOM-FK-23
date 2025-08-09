@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PEMBAYARAN FKOM FK 23 - UNISMUH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta name="color-scheme" content="light dark" />
+
+  <style>
+    /* =========================
+       THEME & TOKENS
+    ========================= */
+    :root {
+      /* Light */
+      --bg: #0b0c0f; /* used as page bg behind shell */
+      --surface: #ffffff;
+      --surface-2: #f4f6f8;
+      --text: #0f172a;
+      --text-2: #334155;
+      --muted: #64748b;
+      --border: #e5e7eb;
+      --accent: #2563eb;
+      --accent-2: #1e40af;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --shadow-1: 0 1px 2px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.08);
+      --shadow-2: 0 6px 22px rgba(0,0,0,.10);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 10px;
+      --radius-xs: 8px;
+      --ring: 0 0 0 3px rgba(37,99,235,.25);
+
+      --font-size-base: 15px;
+      --font-size-sm: 13px;
+      --font-size-xs: 12px;
+      --title: 24px;
+      --h2: 18px;
+      --h3: 16px;
+
+      --transition: 220ms cubic-bezier(.2,.7,.3,1);
+    }
+
+    :root.dark {
+      --surface: #0b1220;
+      --surface-2: #0f172a;
+      --text: #e5e7eb;
+      --text-2: #cbd5e1;
+      --muted: #94a3b8;
+      --border: #1f2937;
+      --accent: #60a5fa;
+      --accent-2: #3b82f6;
+      --shadow-1: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.55);
+      --shadow-2: 0 8px 32px rgba(0,0,0,.6);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not(.light) {
+        --surface: #0b1220;
+        --surface-2: #0f172a;
+        --text: #e5e7eb;
+        --text-2: #cbd5e1;
+        --muted: #94a3b8;
+        --border: #1f2937;
+        --accent: #60a5fa;
+        --accent-2: #3b82f6;
+        --shadow-1: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.55);
+        --shadow-2: 0 8px 32px rgba(0,0,0,.6);
+      }
+    }
+
+    /* =========================
+       BASE
+    ========================= */
+    *,*::before,*::after {box-sizing:border-box}
+    html,body {height:100%}
+    html {scroll-behavior:smooth}
+    body {
+      margin:0; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 100% -100px, rgba(37, 99, 235, .10), transparent 60%),
+        radial-gradient(900px 600px at -10% 0%, rgba(99, 102, 241, .08), transparent 60%),
+        linear-gradient(180deg, var(--surface-2), var(--surface-2)) fixed;
+      color: var(--text-2);
+      font-size: var(--font-size-base);
+      line-height: 1.55;
+    }
+
+    .shell {
+      min-height:100vh;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+    }
+
+    a { color: inherit }
+    img,svg {vertical-align:middle}
+    button {font:inherit}
+    :focus-visible {outline:none; box-shadow: var(--ring)}
+
+    /* =========================
+       TOP PROGRESS BAR (page load)
+    ========================= */
+    .progress {
+      position: fixed; inset: 0 0 auto 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transform: scaleX(0); transform-origin: left; z-index: 1000;
+      transition: transform 1.2s ease;
+    }
+    body.ready .progress { transform: scaleX(1) }
+    body.loaded .progress { transform: scaleX(0); transition: transform .5s ease .2s }
+
+    /* =========================
+       HEADER / NAV
+    ========================= */
+    header {
+      position: sticky; top: 0; z-index: 50; backdrop-filter: saturate(180%) blur(10px);
+      background-color: color-mix(in lab, var(--surface) 70%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav {
+      max-width: 1100px; margin: 0 auto; padding: 14px 20px; display:flex; align-items:center; gap:16px;
+      justify-content: space-between;
+    }
+    .brand { display:flex; align-items:center; gap:10px; color:var(--text) }
+    .brand .logo { width:28px; height:28px; border-radius:8px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: var(--shadow-1) }
+    .brand .title { font-weight:700; letter-spacing:.2px }
+
+    .nav-actions { display:flex; align-items:center; gap:10px }
+    .icon-btn {
+      border:1px solid var(--border); background: var(--surface); color: var(--text-2);
+      padding: 8px 10px; border-radius: 10px; display:inline-flex; align-items:center; gap:10px; cursor:pointer;
+      transition: transform var(--transition), background var(--transition), border-color var(--transition);
+    }
+    .icon-btn:hover { transform: translateY(-1px); background: color-mix(in lab, var(--surface) 90%, var(--surface-2)) }
+    .icon-btn:active { transform: translateY(0) scale(.98) }
+    .icon { width:18px; height:18px; fill: currentColor }
+
+    /* =========================
+       HERO
+    ========================= */
+    .hero {
+      max-width: 1100px; margin: 22px auto 16px; padding: 0 20px 8px;
+      display:grid; grid-template-columns: 1fr;
+    }
+    .hero h1 { font-size: var(--title); color: var(--text); margin: 2px 0 6px; letter-spacing:.2px }
+    .hero p { color: var(--muted); font-size: var(--font-size-sm) }
+
+    /* =========================
+       SECTIONS & CARDS
+    ========================= */
+    .section { max-width: 1100px; margin: 0 auto; padding: 12px 20px }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-1); padding: 20px; transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background var(--transition);
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-2) }
+
+    .section-title { display:flex; align-items:center; gap:10px; color:var(--text); font-size: var(--h2); font-weight:700; margin: 6px 0 14px }
+    .section-title .section-icon { width:20px; height:20px; opacity:.9; color: var(--accent) }
+
+    .grid {
+      display:grid; gap:16px; grid-template-columns: repeat(12, 1fr);
+    }
+    .col-12 { grid-column: span 12 }
+    .col-6 { grid-column: span 6 }
+    .col-4 { grid-column: span 4 }
+    @media (max-width: 900px){ .col-6, .col-4 { grid-column: span 12 } }
+
+    .info-line { display:flex; align-items:center; gap:8px; margin: 6px 0; color: var(--text-2) }
+    .info-line strong { color: var(--text); font-weight:600 }
+
+    .btn {
+      display:inline-flex; align-items:center; gap:10px; cursor:pointer; border:1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--surface-2); color: var(--text-2);
+      padding: 9px 14px; font-weight:600; font-size: var(--font-size-sm);
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
+      text-decoration:none;
+    }
+    .btn:hover { transform: translateY(-1px) }
+    .btn:active { transform: translateY(0) scale(.98) }
+    .btn-accent { background: linear-gradient(180deg, var(--accent), var(--accent-2)); color: #fff; border-color: color-mix(in lab, var(--accent) 50%, transparent) }
+    .btn-outline { background: var(--surface); color: var(--accent); border-color: color-mix(in lab, var(--accent) 35%, var(--border)) }
+
+    .copy-btn { padding:6px 10px; border-radius: 10px; border:1px solid var(--border); background: var(--surface-2); color: var(--text-2) }
+    .copy-btn.copied { background: color-mix(in lab, var(--success) 10%, var(--surface-2)); color: var(--text) }
+
+    .note { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); color: var(--muted); font-size: var(--font-size-xs) }
+
+    /* Semester Cards */
+    .semester-card { display:flex; flex-direction:column; gap:10px }
+    .semester-card h3 { margin:0; color:var(--text); font-size: var(--h3); font-weight:700 }
+    .semester-status { font-size: var(--font-size-xs); color: var(--muted) }
+    .links { display:flex; flex-wrap:wrap; gap:10px }
+
+    /* =========================
+       REVEAL / ANIMATIONS
+    ========================= */
+    @keyframes fadeSlideIn {
+      from { opacity:0; transform: translateY(10px) }
+      to { opacity:1; transform: none }
+    }
+    .reveal { opacity:0; transform: translateY(10px) }
+    body.loaded .reveal { animation: fadeSlideIn .6s var(--transition) forwards }
+    body.loaded .reveal:nth-child(1){ animation-delay: .05s }
+    body.loaded .reveal:nth-child(2){ animation-delay: .12s }
+    body.loaded .reveal:nth-child(3){ animation-delay: .18s }
+
+    /* =========================
+       TOASTS
+    ========================= */
+    .toasts { position: fixed; right: 16px; bottom: 16px; display:flex; flex-direction:column; gap:10px; z-index: 9999 }
+    .toast { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; padding: 12px 14px; border-radius: 12px; color:#fff; box-shadow: var(--shadow-2); border: 1px solid rgba(255,255,255,.15) }
+    .toast .t-icon { width:18px; height:18px; }
+    .toast .t-close { background: transparent; border:0; color:inherit; opacity:.8; cursor:pointer }
+    .toast.success { background: linear-gradient(180deg, color-mix(in hsl, var(--success) 90%, black 10%), var(--success)) }
+    .toast.info { background: linear-gradient(180deg, color-mix(in hsl, var(--accent) 85%, black 15%), var(--accent-2)) }
+    .toast.warn { background: linear-gradient(180deg, color-mix(in hsl, var(--warning) 85%, black 15%), var(--warning)) }
+    .toast.error { background: linear-gradient(180deg, color-mix(in hsl, var(--danger) 85%, black 15%), var(--danger)) }
+    @keyframes toastIn { from { transform: translateY(8px); opacity:0 } to { transform:none; opacity:1 } }
+    @keyframes toastOut { from { transform:none; opacity:1 } to { transform: translateY(8px); opacity:0 } }
+
+    /* =========================
+       GO TO TOP FAB
+    ========================= */
+    .gotop { position: fixed; right: 16px; bottom: 16px; transform: translateY(120%); opacity:0; z-index: 9000 }
+    .gotop.show { transform:none; opacity:1; transition: transform var(--transition), opacity var(--transition) }
+
+    /* =========================
+       FOOTER
+    ========================= */
+    footer { border-top: 1px solid var(--border); background: color-mix(in lab, var(--surface) 85%, transparent); margin-top: 14px }
+    .footer-inner { max-width:1100px; margin:0 auto; padding: 16px 20px; color: var(--muted); font-size: var(--font-size-xs) }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+    @media (max-width: 520px){
+      .nav { padding: 12px 14px }
+      .hero { padding: 0 14px 8px }
+      .section { padding: 10px 14px }
+      .links { flex-direction: column }
+    }
+
+    /* Respect Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto }
+      .card, .btn, .icon-btn, .gotop.show { transition: none }
+      body.loaded .reveal { animation: none; opacity:1; transform:none }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"></div>
+  <div class="shell">
+    <header>
+      <nav class="nav" aria-label="Utama">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="title">FKOM FK 23 — Pembayaran</div>
+        </div>
+        <div class="nav-actions">
+          <button class="icon-btn" id="helpBtn" type="button" aria-haspopup="dialog" aria-controls="helpDialog">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm1 15h-2v-2h2Zm1.07-7.75-.9.92A3.5 3.5 0 0 0 11 13h-2a5.5 5.5 0 0 1 1.61-3.9l1.24-1.26a1.5 1.5 0 1 0-2.12-2.12 1.49 1.49 0 0 0-.44 1.06H7a3.5 3.5 0 1 1 5.97 2.47Z"/></svg>
+            Bantuan
+          </button>
+          <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle tema gelap/terang">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.64 13A9 9 0 1 1 11 2.36a7 7 0 1 0 10.63 10.63Z"/></svg>
+            Tema
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="hero reveal">
+      <h1>PEMBAYARAN FKOM FK 23</h1>
+      <p>Universitas Muhammadiyah Makassar • Panduan resmi pembayaran, unggah bukti, serta akses rekap per semester.</p>
+    </div>
+
+    <main>
+      <!-- Panduan Pembayaran -->
+      <section class="section">
+        <div class="card reveal">
+          <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            Panduan Pembayaran & Unggah
+          </h2>
+          <div class="grid">
+            <div class="col-12 col-6">
+              <div class="info-line"><strong>Iuran per mahasiswa:</strong> Rp 750.000/semester</div>
+              <div class="info-line">
+                <strong>No. Rekening:</strong>
+                <span id="rekeningNo">7776667115</span>
+                <button class="copy-btn" data-copy-target="rekeningNo" aria-live="polite">
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  <span>Salin</span>
+                </button>
+              </div>
+              <div class="info-line"><strong>Atas Nama:</strong> FKOM FK UNISMUH</div>
+              <div class="info-line"><strong>Bank:</strong> BSI (Bank Syariah Indonesia)</div>
+            </div>
+            <div class="col-12 col-6">
+              <div class="info-line"><strong>Format Nama Folder:</strong> <code>5 angka NIM terakhir_nama lengkap</code></div>
+              <div class="info-line">
+                <strong>Contoh:</strong>
+                <span id="folderFormatExample">07523_Agung Nugraha</span>
+                <button class="copy-btn" data-copy-target="folderFormatExample">
+                  <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  <span>Salin</span>
+                </button>
+              </div>
+              <p class="note">Pastikan nama folder sesuai format untuk memudahkan verifikasi.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dukungan -->
+      <section class="section">
+        <div class="card reveal">
+          <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            Dukungan Pembayaran & Kendala
+          </h2>
+          <p>Jika ada kendala pembayaran (nama belum terarsir/terblokir, dsb), silakan chat pribadi <strong>Agung Nugraha</strong> dengan melampirkan <em>screenshot</em> folder & bukti pembayaran, serta alasan kendala.</p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px">
+            <a class="btn btn-accent" href="https://wa.me/62895804705557" target="_blank" rel="noopener" data-toast="Membuka WhatsApp…">
+              <svg class="icon" viewBox="0 0 16 16" fill="currentColor"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
+              Hubungi via WhatsApp
+            </a>
+            <button class="btn btn-outline" id="openHelp" type="button">Lihat langkah unggah</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Akses Data -->
+      <section class="section">
+        <div class="card reveal">
+          <h2 class="section-title">
+            <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+            Akses Data per Semester
+          </h2>
+          <div class="grid">
+            <div class="col-12 col-6 col-4">
+              <div class="card semester-card">
+                <h3>Semester 1</h3>
+                <div class="semester-status">Update Rekap: <strong>24 Mei 2025</strong></div>
+                <div class="links">
+                  <a class="btn" href="https://drive.google.com/drive/folders/1Q_VsHhRB-kFrxfsVgNbsHl7Y2_qUIYlI?usp=sharing" target="_blank" rel="noopener" data-toast="Membuka Google Drive…">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 6.04C18.67 3.67 16.35 2 13.5 2c-2.04 0-3.86.98-5.01 2.52C7.02 4.22 5.29 4 3.5 4.04c-1.88 0-3.43 1.47-3.49 3.34-.06 1.87 1.29 3.54 3.16 3.62H19.5c.28 0 .5.22.5.5s-.22.5-.5.5H3.5C1.57 12 .06 10.49 0 8.56.06 6.63 1.62 5 3.5 5c1.54 0 2.89.83 3.57 2.03C7.64 7.01 8.05 7 8.5 7c.09 0 .18.01.27.02.19-.68.46-1.32.79-1.9C10.21 4.29 11.76 3.5 13.5 3.5c2.33 0 4.29 1.36 5.12 3.24.16-.02.33-.04.5-.04.92 0 1.75.31 2.42.84.67.53 1.08 1.29 1.08 2.11 0 1.76-1.44 3.2-3.2 3.2h-2.01c-.42 1.16-1.52 2-2.84 2-1.48 0-2.75-.97-3.12-2.29-.12-.01-.24-.01-.36-.01H6.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h3.12c.05-.8.39-1.52.93-2.11.53-.59 1.25-.94 2.04-.98.12-1.3.88-2.44 2.03-3.13z"/></svg>
+                    Google Drive
+                  </a>
+                  <a class="btn" href="https://docs.google.com/spreadsheets/d/1uKRt_pLqUd5qle2S3CWJpE43kUrKfViC/edit?gid=2145836649#gid=2145836649" target="_blank" rel="noopener" data-toast="Membuka Spreadsheet…">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8.5 17H6v-1.5h2.5V17zm0-3H6v-1.5h2.5V14zm0-3H6V9.5h2.5V11zm4.5 6H11v-1.5h2.5V17zm0-3H11v-1.5h2.5V14zm0-3H11V9.5h2.5V11zm4.5 6H15v-1.5h2.5V17zm0-3H15v-1.5h2.5V14zm0-3H15V9.5h2.5V11z"/></svg>
+                    Spreadsheet
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-6 col-4">
+              <div class="card semester-card">
+                <h3>Semester 2</h3>
+                <div class="semester-status">Update Rekap: <strong>24 Mei 2025</strong></div>
+                <div class="links">
+                  <a class="btn" href="https://drive.google.com/drive/folders/10if2c2FTSadL0TjKqYie7SXh4eATZPYC" target="_blank" rel="noopener" data-toast="Membuka Google Drive…">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 6.04C18.67 3.67 16.35 2 13.5 2c-2.04 0-3.86.98-5.01 2.52C7.02 4.22 5.29 4 3.5 4.04c-1.88 0-3.43 1.47-3.49 3.34-.06 1.87 1.29 3.54 3.16 3.62H19.5c.28 0 .5.22.5.5s-.22.5-.5.5H3.5C1.57 12 .06 10.49 0 8.56.06 6.63 1.62 5 3.5 5c1.54 0 2.89.83 3.57 2.03C7.64 7.01 8.05 7 8.5 7c.09 0 .18.01.27.02.19-.68.46-1.32.79-1.9C10.21 4.29 11.76 3.5 13.5 3.5c2.33 0 4.29 1.36 5.12 3.24.16-.02.33-.04.5-.04.92 0 1.75.31 2.42.84.67.53 1.08 1.29 1.08 2.11 0 1.76-1.44 3.2-3.2 3.2h-2.01c-.42 1.16-1.52 2-2.84 2-1.48 0-2.75-.97-3.12-2.29-.12-.01-.24-.01-.36-.01H6.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h3.12c.05-.8.39-1.52.93-2.11.53-.59 1.25-.94 2.04-.98.12-1.3.88-2.44 2.03-3.13z"/></svg>
+                    Google Drive
+                  </a>
+                  <a class="btn" href="https://docs.google.com/spreadsheets/d/1jXw9RBFtctaiwC2sU5bLlOJK0QUyOLBm/edit?gid=1383407518#gid=1383407518" target="_blank" rel="noopener" data-toast="Membuka Spreadsheet…">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8.5 17H6v-1.5h2.5V17zm0-3H6v-1.5h2.5V14zm0-3H6V9.5h2.5V11zm4.5 6H11v-1.5h2.5V17zm0-3H11v-1.5h2.5V14zm0-3H11V9.5h2.5V11zm4.5 6H15v-1.5h2.5V17zm0-3H15v-1.5h2.5V14zm0-3H15V9.5h2.5V11z"/></svg>
+                    Spreadsheet
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-6 col-4">
+              <div class="card semester-card">
+                <h3>Semester 3</h3>
+                <div class="semester-status">Update Rekap: <strong>24 Mei 2025</strong></div>
+                <div class="links">
+                  <a class="btn" href="https://drive.google.com/drive/folders/12wKhEeHZ83TXLgSZA6_l8dNtyipEAjA7" target="_blank" rel="noopener" data-toast="Membuka Google Drive…">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 6.04C18.67 3.67 16.35 2 13.5 2c-2.04 0-3.86.98-5.01 2.52C7.02 4.22 5.29 4 3.5 4.04c-1.88 0-3.43 1.47-3.49 3.34-.06 1.87 1.29 3.54 3.16 3.62H19.5c.28 0 .5.22.5.5s-.22.5-.5.5H3.5C1.57 12 .06 10.49 0 8.56.06 6.63 1.62 5 3.5 5c1.54 0 2.89.83 3.57 2.03C7.64 7.01 8.05 7 8.5 7c.09 0 .18.01.27.02.19-.68.46-1.32.79-1.9C10.21 4.29 11.76 3.5 13.5 3.5c2.33 0 4.29 1.36 5.12 3.24.16-.02.33-.04.5-.04.92 0 1.75.31 2.42.84.67.53 1.08 1.29 1.08 2.11 0 1.76-1.44 3.2-3.2 3.2h-2.01c-.42 1.16-1.52 2-2.84 2-1.48 0-2.75-.97-3.12-2.29-.12-.01-.24-.01-.36-.01H6.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h3.12c.05-.8.39-1.52.93-2.11.53-.59 1.25-.94 2.04-.98.12-1.3.88-2.44 2.03-3.13z"/></svg>
+                    Google Drive
+                  </a>
+                  <a class="btn" href="https://docs.google.com/spreadsheets/d/1BScXXK6FpQKhaD-Ph6UqrAJ02G6cIXiE/edit?gid=201605048#gid=201605048" target="_blank" rel="noopener" data-toast="Membuka Spreadsheet…">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8.5 17H6v-1.5h2.5V17zm0-3H6v-1.5h2.5V14zm0-3H6V9.5h2.5V11zm4.5 6H11v-1.5h2.5V17zm0-3H11v-1.5h2.5V14zm0-3H11V9.5h2.5V11zm4.5 6H15v-1.5h2.5V17zm0-3H15v-1.5h2.5V14zm0-3H15V9.5h2.5V11z"/></svg>
+                    Spreadsheet
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 col-6 col-4">
+              <div class="card semester-card">
+                <h3>Semester 4</h3>
+                <div class="semester-status">Update Rekap: <strong>24 Mei 2025</strong></div>
+                <div class="links">
+                  <a class="btn" href="https://drive.google.com/drive/folders/1BzU7pnWkiRr-oolx_yUvLTIHeMToZZnL" target="_blank" rel="noopener" data-toast="Membuka Google Drive…">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19.35 6.04C18.67 3.67 16.35 2 13.5 2c-2.04 0-3.86.98-5.01 2.52C7.02 4.22 5.29 4 3.5 4.04c-1.88 0-3.43 1.47-3.49 3.34-.06 1.87 1.29 3.54 3.16 3.62H19.5c.28 0 .5.22.5.5s-.22.5-.5.5H3.5C1.57 12 .06 10.49 0 8.56.06 6.63 1.62 5 3.5 5c1.54 0 2.89.83 3.57 2.03C7.64 7.01 8.05 7 8.5 7c.09 0 .18.01.27.02.19-.68.46-1.32.79-1.9C10.21 4.29 11.76 3.5 13.5 3.5c2.33 0 4.29 1.36 5.12 3.24.16-.02.33-.04.5-.04.92 0 1.75.31 2.42.84.67.53 1.08 1.29 1.08 2.11 0 1.76-1.44 3.2-3.2 3.2h-2.01c-.42 1.16-1.52 2-2.84 2-1.48 0-2.75-.97-3.12-2.29-.12-.01-.24-.01-.36-.01H6.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5h3.12c.05-.8.39-1.52.93-2.11.53-.59 1.25-.94 2.04-.98.12-1.3.88-2.44 2.03-3.13z"/></svg>
+                    Google Drive
+                  </a>
+                  <a class="btn" href="https://docs.google.com/spreadsheets/d/1GY6ctqTLTDNARXgHKy6diqm_dCTarhe5/edit?gid=1727109246#gid=1727109246" target="_blank" rel="noopener" data-toast="Membuka Spreadsheet…">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8.5 17H6v-1.5h2.5V17zm0-3H6v-1.5h2.5V14zm0-3H6V9.5h2.5V11zm4.5 6H11v-1.5h2.5V17zm0-3H11v-1.5h2.5V14zm0-3H11V9.5h2.5V11zm4.5 6H15v-1.5h2.5V17zm0-3H15v-1.5h2.5V14zm0-3H15V9.5h2.5V11z"/></svg>
+                    Spreadsheet
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">© <span id="currentYear"></span> FKOM FK UNISMUH. Hak Cipta Dilindungi.</div>
+    </footer>
+  </div>
+
+  <!-- Toasts & FAB -->
+  <div class="toasts" id="toasts" aria-live="polite" aria-atomic="true"></div>
+  <button class="icon-btn gotop" id="goTop" aria-label="Kembali ke atas">
+    <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.59 5.58L20 12l-8-8-8 8z"/></svg>
+    Atas
+  </button>
+
+  <!-- Bantuan Dialog (simple) -->
+  <dialog id="helpDialog" style="border:none; border-radius:16px; max-width:560px; width:calc(100% - 24px); padding:0; box-shadow: var(--shadow-2);">
+    <div class="card" style="margin:0; border:none; border-radius:16px">
+      <h2 class="section-title" style="margin-top:0">
+        <svg class="section-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+        Langkah Unggah Bukti Pembayaran
+      </h2>
+      <ol style="margin:0 0 10px 18px; color:var(--text-2); font-size: var(--font-size-sm); line-height:1.6">
+        <li>Masuk ke <strong>Google Drive</strong> sesuai semester Anda.</li>
+        <li>Buat folder dengan format: <code>5angkaNIM_nama lengkap</code>.</li>
+        <li>Unggah <strong>bukti pembayaran</strong> ke dalam folder tersebut.</li>
+        <li>Kirim <em>screenshot</em> folder & bukti via WhatsApp admin.</li>
+      </ol>
+      <div style="display:flex; gap:8px; justify-content:flex-end">
+        <button class="btn" id="helpClose">Tutup</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    // =============================
+    // Utilities
+    // =============================
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+    // Year
+    $('#currentYear').textContent = new Date().getFullYear();
+
+    // Page Load Progress + Reveal
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('ready');
+      requestAnimationFrame(() => {
+        // simulate load completion after a small delay
+        setTimeout(() => document.body.classList.add('loaded'), 350);
+      });
+    });
+
+    // Theme Toggle with localStorage
+    const themeToggle = $('#themeToggle');
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') document.documentElement.classList.add('dark');
+    if (storedTheme === 'light') document.documentElement.classList.add('light');
+
+    themeToggle?.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      document.documentElement.classList.toggle('light', !isDark);
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      showToast(`Tema ${isDark ? 'gelap' : 'terang'} diaktifkan`, 'info');
+    });
+
+    // Toast System
+    const toasts = $('#toasts');
+    function showToast(message, type='success', ttl=2600) {
+      const t = document.createElement('div');
+      t.className = `toast ${type}`;
+      t.role = 'status';
+      t.innerHTML = `
+        <svg class="t-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          ${type==='success' ? '<path d="M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5z"/>' : ''}
+          ${type==='info' ? '<path d="M11 7h2V5h-2v2zm0 12h2V9h-2v10z"/>' : ''}
+          ${type==='warn' ? '<path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>' : ''}
+          ${type==='error' ? '<path d="M12 2a10 10 0 1010 10A10.011 10.011 0 0012 2zm3 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>' : ''}
+        </svg>
+        <div>${message}</div>
+        <button class="t-close" aria-label="Tutup">×</button>
+      `;
+      t.style.animation = 'toastIn .28s ease forwards';
+      toasts.appendChild(t);
+      const close = () => {
+        t.style.animation = 'toastOut .22s ease forwards';
+        setTimeout(() => t.remove(), 220);
+      };
+      t.querySelector('.t-close').addEventListener('click', close);
+      const timer = setTimeout(close, ttl);
+      t.addEventListener('pointerenter', () => clearTimeout(timer), { once: true });
+      return t;
+    }
+
+    // Copy to Clipboard (by data attribute)
+    function handleCopy(button){
+      const targetId = button.getAttribute('data-copy-target');
+      const el = document.getElementById(targetId);
+      if (!el) return;
+      const text = el.innerText.trim();
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          button.classList.add('copied');
+          showToast('Teks berhasil disalin', 'success');
+          setTimeout(()=> button.classList.remove('copied'), 1500);
+        })
+        .catch(async () => {
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta);
+            ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+            button.classList.add('copied');
+            showToast('Teks berhasil disalin', 'success');
+            setTimeout(()=> button.classList.remove('copied'), 1500);
+          } catch(e){
+            showToast('Gagal menyalin. Salin manual ya.', 'warn');
+          }
+        });
+    }
+    $$('.copy-btn').forEach(btn => btn.addEventListener('click', () => handleCopy(btn)));
+
+    // External link hint toast
+    $$('a[data-toast]').forEach(a => {
+      a.addEventListener('click', () => showToast(a.getAttribute('data-toast') || 'Membuka tautan…', 'info', 1800));
+    });
+
+    // Go To Top FAB
+    const goTop = $('#goTop');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      goTop.classList.toggle('show', y > 240);
+    });
+    goTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    // Help dialog
+    const helpDialog = $('#helpDialog');
+    $('#openHelp')?.addEventListener('click', () => helpDialog.showModal());
+    $('#helpClose')?.addEventListener('click', () => helpDialog.close());
+    $('#helpBtn')?.addEventListener('click', () => helpDialog.showModal());
+  </script>
+</body>
+</html>
